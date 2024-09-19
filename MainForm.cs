@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 namespace ProjectEnv
 {
@@ -29,6 +30,47 @@ namespace ProjectEnv
     private LinkLabel linkLabelSite;
     private Label labelCopyright;
 
+    public void CheckRuns() {
+		try {
+			RegistryKey key = Registry.CurrentUser.OpenSubKey("Software\\OVG-Developers", true);
+			
+			int runs = -1;
+			
+			if (key != null && key.GetValue("Runs") != null) {
+				runs = (int) key.GetValue("Runs");
+			} else {
+				key = Registry.CurrentUser.CreateSubKey("Software\\OVG-Developers");
+			}
+			
+			runs = runs + 1;
+			
+			key.SetValue("Runs", runs);
+			
+			if (runs > 10) {
+				System.Windows.Forms.MessageBox.Show("Number of runs expired.\n"
+							+ "Please register the application (visit https://ovg-developers.mystrikingly.com/ for purchase).");
+				
+				Environment.Exit(0);
+			}
+		} catch (Exception e) {
+			Console.WriteLine(e.Message);
+		}
+	}
+	
+	public bool IsRegistered() {
+		try {
+			RegistryKey key = Registry.CurrentUser.OpenSubKey("Software\\OVG-Developers");
+			
+			if (key != null && key.GetValue("Registered") != null) {
+				return true;
+			}
+		} catch (Exception e) {
+			Console.WriteLine(e.Message);
+		}
+		
+		return false;
+	}
+    
     public MainForm() {
     	this.InitializeComponent();
     }
@@ -115,7 +157,7 @@ namespace ProjectEnv
     	this.tabControl.Controls.Add(this.tabPageHelp);
     	this.tabControl.Controls.Add(this.tabPageAbout);
     	this.tabControl.Location = new System.Drawing.Point(1, 4);
-    	this.tabControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+    	this.tabControl.Margin = new System.Windows.Forms.Padding(4);
     	this.tabControl.Name = "tabControl";
     	this.tabControl.SelectedIndex = 0;
     	this.tabControl.Size = new System.Drawing.Size(637, 345);
@@ -128,9 +170,9 @@ namespace ProjectEnv
     	this.tabPageMain.Controls.Add(this.textBoxProjectFile);
     	this.tabPageMain.Controls.Add(this.labelProjectFile);
     	this.tabPageMain.Location = new System.Drawing.Point(4, 25);
-    	this.tabPageMain.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+    	this.tabPageMain.Margin = new System.Windows.Forms.Padding(4);
     	this.tabPageMain.Name = "tabPageMain";
-    	this.tabPageMain.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+    	this.tabPageMain.Padding = new System.Windows.Forms.Padding(4);
     	this.tabPageMain.Size = new System.Drawing.Size(629, 316);
     	this.tabPageMain.TabIndex = 0;
     	this.tabPageMain.Text = "Main";
@@ -139,7 +181,7 @@ namespace ProjectEnv
     	// textBoxNumberOfFactors
     	// 
     	this.textBoxNumberOfFactors.Location = new System.Drawing.Point(459, 85);
-    	this.textBoxNumberOfFactors.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+    	this.textBoxNumberOfFactors.Margin = new System.Windows.Forms.Padding(4);
     	this.textBoxNumberOfFactors.Name = "textBoxNumberOfFactors";
     	this.textBoxNumberOfFactors.Size = new System.Drawing.Size(132, 22);
     	this.textBoxNumberOfFactors.TabIndex = 3;
@@ -159,7 +201,7 @@ namespace ProjectEnv
     	// textBoxProjectFile
     	// 
     	this.textBoxProjectFile.Location = new System.Drawing.Point(25, 39);
-    	this.textBoxProjectFile.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+    	this.textBoxProjectFile.Margin = new System.Windows.Forms.Padding(4);
     	this.textBoxProjectFile.Name = "textBoxProjectFile";
     	this.textBoxProjectFile.ReadOnly = true;
     	this.textBoxProjectFile.Size = new System.Drawing.Size(565, 22);
@@ -179,9 +221,9 @@ namespace ProjectEnv
     	// 
     	this.tabPageHelp.Controls.Add(this.richTextBoxHelp);
     	this.tabPageHelp.Location = new System.Drawing.Point(4, 25);
-    	this.tabPageHelp.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+    	this.tabPageHelp.Margin = new System.Windows.Forms.Padding(4);
     	this.tabPageHelp.Name = "tabPageHelp";
-    	this.tabPageHelp.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+    	this.tabPageHelp.Padding = new System.Windows.Forms.Padding(4);
     	this.tabPageHelp.Size = new System.Drawing.Size(629, 316);
     	this.tabPageHelp.TabIndex = 1;
     	this.tabPageHelp.Text = "Help";
@@ -190,7 +232,7 @@ namespace ProjectEnv
     	// richTextBoxHelp
     	// 
     	this.richTextBoxHelp.Location = new System.Drawing.Point(23, 27);
-    	this.richTextBoxHelp.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+    	this.richTextBoxHelp.Margin = new System.Windows.Forms.Padding(4);
     	this.richTextBoxHelp.Name = "richTextBoxHelp";
     	this.richTextBoxHelp.ReadOnly = true;
     	this.richTextBoxHelp.Size = new System.Drawing.Size(568, 175);
@@ -202,9 +244,9 @@ namespace ProjectEnv
     	this.tabPageAbout.Controls.Add(this.linkLabelSite);
     	this.tabPageAbout.Controls.Add(this.labelCopyright);
     	this.tabPageAbout.Location = new System.Drawing.Point(4, 25);
-    	this.tabPageAbout.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+    	this.tabPageAbout.Margin = new System.Windows.Forms.Padding(4);
     	this.tabPageAbout.Name = "tabPageAbout";
-    	this.tabPageAbout.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+    	this.tabPageAbout.Padding = new System.Windows.Forms.Padding(4);
     	this.tabPageAbout.Size = new System.Drawing.Size(629, 316);
     	this.tabPageAbout.TabIndex = 2;
     	this.tabPageAbout.Text = "About";
@@ -235,7 +277,7 @@ namespace ProjectEnv
     	// buttonRun
     	// 
     	this.buttonRun.Location = new System.Drawing.Point(513, 356);
-    	this.buttonRun.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+    	this.buttonRun.Margin = new System.Windows.Forms.Padding(4);
     	this.buttonRun.Name = "buttonRun";
     	this.buttonRun.Size = new System.Drawing.Size(120, 32);
     	this.buttonRun.TabIndex = 1;
@@ -246,7 +288,7 @@ namespace ProjectEnv
     	// buttonOpen
     	// 
     	this.buttonOpen.Location = new System.Drawing.Point(1, 356);
-    	this.buttonOpen.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+    	this.buttonOpen.Margin = new System.Windows.Forms.Padding(4);
     	this.buttonOpen.Name = "buttonOpen";
     	this.buttonOpen.Size = new System.Drawing.Size(100, 32);
     	this.buttonOpen.TabIndex = 2;
@@ -257,7 +299,7 @@ namespace ProjectEnv
     	// buttonSave
     	// 
     	this.buttonSave.Location = new System.Drawing.Point(109, 356);
-    	this.buttonSave.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+    	this.buttonSave.Margin = new System.Windows.Forms.Padding(4);
     	this.buttonSave.Name = "buttonSave";
     	this.buttonSave.Size = new System.Drawing.Size(103, 32);
     	this.buttonSave.TabIndex = 3;
@@ -275,11 +317,12 @@ namespace ProjectEnv
     	this.Controls.Add(this.buttonRun);
     	this.Controls.Add(this.tabControl);
     	this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-    	this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+    	this.Margin = new System.Windows.Forms.Padding(4);
     	this.MaximizeBox = false;
     	this.MinimizeBox = false;
     	this.Name = "MainForm";
     	this.Text = "ProjectEnv";
+    	this.Shown += new System.EventHandler(this.MainFormShown);
     	this.tabControl.ResumeLayout(false);
     	this.tabPageMain.ResumeLayout(false);
     	this.tabPageMain.PerformLayout();
@@ -289,5 +332,11 @@ namespace ProjectEnv
     	this.ResumeLayout(false);
 
     }
+		void MainFormShown(object sender, EventArgs e)
+		{
+			if (!IsRegistered()) {
+				CheckRuns();
+    		}
+		}
   }
 }
